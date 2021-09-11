@@ -6,13 +6,13 @@ from potatoes.modsqrt import modular_sqrt
 
 
 class Potatoes:
-    def __init__(self, a, b, p, tracing=False):
+    def __init__(self, a, b, p, tracing=False, x=None, y=None):
         self.a = a
         self.b = b
         self.p = p
 
-        self.x = None
-        self.y = None
+        self.x = x
+        self.y = y
 
         self.tracing = tracing
         self.rxs = []
@@ -122,8 +122,8 @@ class Potatoes:
             return [], [], None, None
         if k < 0:
             # k * point = -k * (-point)
-            Rx, Ry = self.eccNegation(Px, Py)
-            return self.eccScalarMult(-k, Rx, Ry)
+            Rx, Ry = self.eccNegation(Px, Py, a, b, p)
+            return self.eccScalarMult(-k, Rx, Ry, a, b, p)
         rx, ry = Px, Py
         Rxs, Rys = [rx], [ry]
         for i in range(k-1):

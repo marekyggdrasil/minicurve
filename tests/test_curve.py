@@ -26,12 +26,8 @@ def test_curve_addition():
     a = 0
     b = 5
     p = 7
-    P = Potatoes(a, b, p)
-    P.setX(3)
-    P.setY(2)
-    Q = Potatoes(a, b, p)
-    Q.setX(6)
-    Q.setY(5)
+    P = Potatoes(a, b, p, x=3, y=2)
+    Q = Potatoes(a, b, p, x=6, y=5)
     R = P + Q
     assert R.x == 6
     assert R.y == 2
@@ -40,12 +36,10 @@ def test_curve_scalar_multiplication():
     a = 0
     b = 5
     p = 7
-    P = Potatoes(a, b, p)
-    P.setX(3)
-    P.setY(2)
-    k = 3
-    kP = P*3
-    Q = Potatoes(a, b, p)
-    Q.setX(6)
-    Q.setY(5)
-    assert kP == Q
+    P = Potatoes(a, b, p, x=3, y=2)
+    Q = Potatoes(a, b, p, x=6, y=5)
+    R = Potatoes(a, b, p, x=3, y=5)
+    assert P*3 == Q
+    assert 3*P == Q
+    assert -1*P == R
+    assert P*(-1) == R
