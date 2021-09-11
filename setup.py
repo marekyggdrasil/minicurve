@@ -1,10 +1,9 @@
 import setuptools
-import minicurve
 
 
 setuptools.setup(
     name='minicurve',
-    version=minicurve.__version__,
+    version='0.0.1',
     packages=['minicurve',],
     license='MIT',
     description = 'Small, insecure and visual ECC library for educational purposes',
