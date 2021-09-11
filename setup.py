@@ -12,7 +12,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     author = 'Marek Narozniak',
     author_email = 'marek.yggdrasil@gmail.com',
-    install_requires=[],
+    install_requires=['numpy', 'matplotlib'],
     url = 'https://github.com/marekyggdrasil/potatoes',
     classifiers=[
         "Programming Language :: Python :: 3",
