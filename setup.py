@@ -1,11 +1,11 @@
 import setuptools
-import potatoes
+import minicurve
 
 
 setuptools.setup(
-    name='potatoes',
-    version=truthsayer.__version__,
-    packages=['potatoes',],
+    name='minicurve',
+    version=minicurve.__version__,
+    packages=['minicurve',],
     license='MIT',
     description = 'Small, insecure and visual ECC library for educational purposes',
     long_description=open('README.md').read(),
