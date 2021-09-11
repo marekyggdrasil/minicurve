@@ -92,6 +92,11 @@ outputs
 
 ![output-multiplication](https://github.com/marekyggdrasil/minicurve/blob/main/images/example_mul.png?raw=true)
 
+## FAQ
+
+### What are the valid values of colors?
+
+We are using [Matplotlib colors](https://matplotlib.org/stable/tutorials/colors/colors.html).
 
 ## Thanks!
 
