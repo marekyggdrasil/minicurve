@@ -2,7 +2,7 @@ import numpy as np
 
 from potatoes.helpers import extendedEuclideanAlgorithm
 from potatoes.helpers import inverse
-from potatoes.mod_sqrt import modular_sqrt
+from potatoes.modsqrt import modular_sqrt
 
 
 class Potatoes:
@@ -32,11 +32,22 @@ class Potatoes:
     def getAll(self):
         points = []
         for x in range(self.p):
-            y_squared = np.mod(x**3 + self.a*X + self.b, self.p)
+            y_squared = np.mod(x**3 + self.a*x + self.b, self.p)
             residue_1 = modular_sqrt(y_squared, self.p)
             residue_2 = self.p - residue_1
-            points.append(tuple(x, residue_1))
-            points.append(tuple(x, resicue_2))
+            points.append(tuple([x, residue_1]))
+            points.append(tuple([x, residue_2]))
+        # filter duplicates
+        points = [t for t in (set(tuple(i) for i in points))]
+        return points
+
+    def getAllNaive(self):
+        points = [(None, None)]
+        for x in range(self.p):
+            for y in range(self.p):
+                if np.mod(y**2-x**3-x*self.a-self.b, self.p) == 0:
+                    point = tuple([x, y])
+                    points.append(point)
         return points
 
     def __add__(self, other):
@@ -45,22 +56,29 @@ class Potatoes:
            or other.p != self.p:
             raise ValueError('Incompatible curves')
         rx, ry = self.eccFiniteAddition(
-            self, self.x, self.y, other.x, other.y, self.a, self.b, self.p)
+            self.x, self.y, other.x, other.y, self.a, self.b, self.p)
         res = Potatoes(self.a, self.b, self.p)
         res.setX(rx)
         res.setY(ry)
         return res
 
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
     def __mul__(self, other):
         if not isinstance(other, int):
             raise ValueError('ECC point can only be multiplied by a scalar')
-        rxs, rys, rx, ry = eccScalarMult(other, self.x, self.y, self.a, self.b, self.p)
+        rxs, rys, rx, ry = self.eccScalarMult(
+            other, self.x, self.y, self.a, self.b, self.p)
         res = Potatoes(self.a, self.b, self.p, tracing=self.tracing)
         res.setX(rx)
         res.setY(ry)
         if self.tracing:
             res.setTracing(rxs, rys)
         return res
+
+    def __rmul__(self, other):
+        return self.__mul__(other)
 
     @classmethod
     def onCurve(self, X, Y, a, b, p):
@@ -86,7 +104,7 @@ class Potatoes:
             m = (Py - Qy)*inverse(Px - Qx, p)
         Rx = np.mod(m**2 - Px - Qx, p)
         Ry = np.mod(-(Py + m*(Rx - Px)), p)
-        assert onCurve(Rx, Ry, a, b, p)
+        assert self.onCurve(Rx, Ry, a, b, p)
         return Rx, Ry
 
     @classmethod
@@ -98,7 +116,7 @@ class Potatoes:
         return Rx, Ry
 
     @classmethod
-    def eccScalarMult(k, Px, Py, a, b, p):
+    def eccScalarMult(self, k, Px, Py, a, b, p):
         assert self.onCurve(Px, Py, a, b, p)
         if np.mod(k, p) == 0:
             return [], [], None, None
@@ -116,7 +134,7 @@ class Potatoes:
         return Rxs, Rys, rx, ry
 
     @classmethod
-    def generateGroup(Gx, Gy, a, b, p):
+    def generateGroup(self, Gx, Gy, a, b, p):
         Qx, Qy = Gx, Gy
         orbit = [(0, 0)]
         while (not (Qx == 0 and Qy == 0)) and (None not in [Qx, Qy]):
@@ -126,7 +144,7 @@ class Potatoes:
         return orbit
 
     @classmethod
-    def bruteForceKey(Px, Py, pub_x, pub_y, a, b, p):
+    def bruteForceKey(self, Px, Py, pub_x, pub_y, a, b, p):
         for k in range(p):
             _, _, public_x, public_y = self.eccScalarMult(k, Px, Py, a, b, p)
             if public_x == pub_x and public_y == pub_y:

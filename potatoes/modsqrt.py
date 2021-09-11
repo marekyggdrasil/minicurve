@@ -1,3 +1,6 @@
+import numpy as np
+
+
 def modular_sqrt(a, p):
 
     def legendre_symbol(a, p):
@@ -9,8 +12,8 @@ def modular_sqrt(a, p):
             Returns 1 if a has a square root modulo
             p, -1 otherwise.
         """
-        ls = pow(a, (p - 1) // 2, p)
-        return -1 if ls == p - 1 else ls
+        ls = np.power(a, (p - 1) // 2)
+        return -1 if ls == p - 1 else np.mod(ls, p)
 
     """ Find a quadratic residue (mod p) of 'a'. p
         must be an odd prime.
@@ -37,7 +40,7 @@ def modular_sqrt(a, p):
     elif p == 2:
         return p
     elif p % 4 == 3:
-        return pow(a, (p + 1) // 4, p)
+        return np.mod(np.power(a, (p + 1) // 4), p)
 
     # Partition p-1 to s * 2^e for an odd s (i.e.
     # reduce all the powers of 2 from p-1)
@@ -70,9 +73,9 @@ def modular_sqrt(a, p):
     # both a and b
     # r is the exponent - decreases with each update
     #
-    x = pow(a, (s + 1) // 2, p)
-    b = pow(a, s, p)
-    g = pow(n, s, p)
+    x = np.mod(np.power(a, (s + 1) // 2), p)
+    b = np.mod(np.power(a, s), p)
+    g = np.mod(np.power(n, s), p)
     r = e
 
     while True:
@@ -81,12 +84,12 @@ def modular_sqrt(a, p):
         for m in range(r):
             if t == 1:
                 break
-            t = pow(t, 2, p)
+            t = np.mod(np.power(t, 2), p)
 
         if m == 0:
             return x
 
-        gs = pow(g, 2 ** (r - m - 1), p)
+        gs = np.mod(np.power(g, 2 ** (r - m - 1)), p)
         g = (gs * gs) % p
         x = (x * gs) % p
         b = (b * g) % p
