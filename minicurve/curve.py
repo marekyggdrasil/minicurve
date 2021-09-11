@@ -1,18 +1,34 @@
 import numpy as np
 
-from potatoes.helpers import extendedEuclideanAlgorithm
-from potatoes.helpers import inverse
-from potatoes.modsqrt import modular_sqrt
+from minicurve.helpers import extendedEuclideanAlgorithm
+from minicurve.helpers import inverse
+from minicurve.modsqrt import modular_sqrt
 
 
-class Potatoes:
-    def __init__(self, a, b, p, tracing=False, x=None, y=None):
+class MiniCurve:
+    def __init__(self, a, b, p,
+                 tracing=False, x=None, y=None, label=None, color=None, delta=0,
+                 parent=None):
         self.a = a
         self.b = b
         self.p = p
 
+        if x is not None and y is not None:
+            if not self.onCurve(x, y, a, b, p):
+                raise ValueError('Point ({0}, {1}) does not belong to the curve described by a={2}, b={3} and p={4}'.format(str(x), str(y), str(a), str(b), str(p)))
         self.x = x
         self.y = y
+
+        # parent point coordinates for addition visualization
+        self.parent = parent
+
+        self.label = label
+        self.color = color
+        self.x_delta = 0
+        self.y_delta = 0
+        self.arrow_color = 'black'
+        self.arrow_head = 10 # mult of thickness
+        self.arrow_thickness = 0.01
 
         self.tracing = tracing
         self.rxs = []
@@ -23,6 +39,12 @@ class Potatoes:
 
     def setY(self, y):
         self.y = y
+
+    def setLabel(self, label):
+        self.label = label
+
+    def setColor(self, color):
+        self.color = color
 
     def setTracing(self, rxs, rys):
         self.rxs = rxs
@@ -57,7 +79,8 @@ class Potatoes:
             raise ValueError('Incompatible curves')
         rx, ry = self.eccFiniteAddition(
             self.x, self.y, other.x, other.y, self.a, self.b, self.p)
-        res = Potatoes(self.a, self.b, self.p)
+        parent = (self.x, self.y, other.x, other.y)
+        res = MiniCurve(self.a, self.b, self.p, parent=parent)
         res.setX(rx)
         res.setY(ry)
         return res
@@ -70,7 +93,7 @@ class Potatoes:
             raise ValueError('ECC point can only be multiplied by a scalar')
         rxs, rys, rx, ry = self.eccScalarMult(
             other, self.x, self.y, self.a, self.b, self.p)
-        res = Potatoes(self.a, self.b, self.p, tracing=self.tracing)
+        res = MiniCurve(self.a, self.b, self.p, tracing=self.tracing)
         res.setX(rx)
         res.setY(ry)
         if self.tracing:
