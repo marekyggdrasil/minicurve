@@ -32,6 +32,16 @@ def test_curve_addition():
     assert R.x == 6
     assert R.y == 2
 
+def test_curve_subtraction():
+    a = 0
+    b = 5
+    p = 7
+    P = mc(a, b, p, x=3, y=2)
+    Q = mc(a, b, p, x=6, y=5)
+    R = P - Q
+    assert R.x == 5
+    assert R.y == 5
+
 def test_curve_scalar_multiplication():
     a = 0
     b = 5

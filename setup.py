@@ -3,7 +3,7 @@ import setuptools
 
 setuptools.setup(
     name='minicurve',
-    version='0.0.1',
+    version='0.1.0',
     packages=['minicurve',],
     license='MIT',
     description = 'Small, insecure and visual ECC library for educational purposes',

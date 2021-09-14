@@ -85,6 +85,9 @@ class MiniCurve:
         res.setY(ry)
         return res
 
+    def __sub__(self, other):
+        return self.__add__(-1*other)
+
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y
 
